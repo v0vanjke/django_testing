@@ -3,6 +3,7 @@ from http import HTTPStatus
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+
 from notes.models import Note
 
 User = get_user_model()
@@ -21,6 +22,10 @@ class Tests(TestCase):
         )
 
     def test_homepage(self):
+        """
+        Страницы домашняя, логин, логаут, авторизация
+        доступны для всех.
+        """
         urls = (
             'notes:home',
             'users:login',
@@ -34,6 +39,11 @@ class Tests(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_availability_for_pages_list_add_done(self):
+        """
+        Страницы добавление записи, список записей,
+        успешного добавления/редактирования/удаления записи
+        доступны авторизованному пользователю.
+        """
         user = self.author
         self.client.force_login(user)
         urls = (
@@ -48,6 +58,10 @@ class Tests(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_availability_for_note_edit_delete_detail(self):
+        """
+        Пользователь может редактировать и удалять свои записи
+        и не может редактировать и удалять чужие записи.
+        """
         user_statuses = (
             (self.author, HTTPStatus.OK),
             (self.reader, HTTPStatus.NOT_FOUND),
@@ -61,6 +75,13 @@ class Tests(TestCase):
                     self.assertEqual(response.status_code, status)
 
     def test_redirect_for_anonymous_client(self):
+        """
+        Неавторизованный пользователь при поптыке посетить страницы
+        редактирования записи, удаления записи, детали записи,
+        добавление записи, список записей, успешного
+        добавления/редактирования/удаления записи
+        будет переадресован на страницу авторизации.
+        """
         login_url = reverse('users:login')
         for name, args in (
                 ('notes:edit', (self.note.slug,)),

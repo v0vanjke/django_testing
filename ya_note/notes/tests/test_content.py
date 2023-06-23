@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+
 from notes.models import Note
 
 User = get_user_model()
@@ -19,6 +20,10 @@ class TestContent(TestCase):
         )
 
     def test_notes_lists_are_different_for_different_users(self):
+        """
+        На странице списка записей авторизованного пользователя
+        отображаются только его записи.
+        """
         user_noteincludedstatus = (
             (self.author, True),
             (self.reader, False),
@@ -31,6 +36,10 @@ class TestContent(TestCase):
             self.assertEqual(self.note in object_list, notestatus)
 
     def test_authorized_client_has_form(self):
+        """
+        На страницах добавления и редактирования записи
+        у аторизованного пользователя есть форма.
+        """
         for name, slug in (
                 ('notes:add', None),
                 ('notes:edit', (self.note.slug,))

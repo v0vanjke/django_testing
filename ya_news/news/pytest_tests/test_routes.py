@@ -1,9 +1,9 @@
 # test_routes.py
-from http import HTTPStatus
-
 import pytest
-from django.urls import reverse
+from http import HTTPStatus
 from pytest_django.asserts import assertRedirects
+
+from django.urls import reverse
 
 
 @pytest.mark.django_db
@@ -18,6 +18,10 @@ from pytest_django.asserts import assertRedirects
     )
 )
 def test_pages_availability_for_anonymous_user(client, name, args):
+    """
+    Страницы домашняя, логина, логаута, авторизации, отдельной новости
+    доступны неавторизованному пользователю.
+    """
     url = reverse(name, args=args)
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
@@ -40,6 +44,9 @@ def test_pages_availability_for_anonymous_user(client, name, args):
 def test_comment_pages_availability_for_different_users(
         parametrized_client, name, news, expected_status, comment,
 ):
+    """
+    Страницы редактирования и удаления комментария доступны только автору.
+    """
     url = reverse(name, args=(comment.id,))
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
@@ -54,6 +61,12 @@ def test_comment_pages_availability_for_different_users(
     )
 )
 def test_redirects_for_anonymous_user(client, name, args):
+    """
+    Неавторизованный пользователь
+    не может редактировать и удалять комментарии
+    при попытке отредактировать или удалить
+    переадресовывется на старицу логина.
+    """
     login_url = reverse('users:login')
     url = reverse(name, args=args)
     expected_url = f'{login_url}?next={url}'

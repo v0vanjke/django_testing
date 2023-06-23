@@ -1,5 +1,6 @@
 # test_content.py
 import pytest
+
 from django.conf import settings
 from django.urls import reverse
 
@@ -14,6 +15,10 @@ from django.urls import reverse
 def test_pages_contains_form_for_auth_user(
         author_client, name, args, news, comment,
 ):
+    """
+    Проверяем наличие формы комментария
+    для авторизованного пользователя.
+    """
     url = reverse(name, args=args)
     response = author_client.get(url)
     assert 'form' in response.context
@@ -28,12 +33,19 @@ def test_pages_contains_form_for_auth_user(
     )
 )
 def test_anonymous_client_has_no_form(client, news, comment, name, args):
+    """
+    Проверяем отсутсвие формы комментария
+    для неавторизованного пользователя.
+    """
     response = client.get(name, args=args)
     assert 'form' not in response.context
 
 
 @pytest.mark.django_db
 def test_news_count(client, news_list):
+    """
+    Количество новостей на главной странице = 10.
+    """
     response = client.get(pytest.HOME_URL)
     object_list = response.context['object_list']
     news_count = len(object_list)
@@ -42,6 +54,10 @@ def test_news_count(client, news_list):
 
 @pytest.mark.django_db
 def test_news_order(client, news_list):
+    """
+    Новости на главной странице
+    должны размещаться от новых к старым.
+    """
     response = client.get(pytest.HOME_URL)
     object_list = response.context['object_list']
     all_dates = [news.date for news in object_list]
@@ -51,6 +67,10 @@ def test_news_order(client, news_list):
 
 @pytest.mark.django_db
 def test_comments_order(news, client, comment_list):
+    """
+    Комментарии на странице новости
+    должны отображаться от старых к новым.
+    """
     detail_url = reverse('news:detail', args=(news.id,))
     response = client.get(detail_url)
     assert 'news' in response.context
