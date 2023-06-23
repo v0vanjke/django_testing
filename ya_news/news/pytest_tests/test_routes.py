@@ -19,7 +19,7 @@ from django.urls import reverse
 )
 def test_pages_availability_for_anonymous_user(client, name, args):
     """
-    Страницы домашняя, логина, логаута, авторизации, отдельной новости
+    Страницы домашняя, логина, логаута, регистрации, отдельной новости
     доступны неавторизованному пользователю.
     """
     url = reverse(name, args=args)
@@ -65,7 +65,7 @@ def test_redirects_for_anonymous_user(client, name, args):
     Неавторизованный пользователь
     не может редактировать и удалять комментарии
     при попытке отредактировать или удалить
-    переадресовывется на старицу логина.
+    переадресовывется на старицу авторизации.
     """
     login_url = reverse('users:login')
     url = reverse(name, args=args)

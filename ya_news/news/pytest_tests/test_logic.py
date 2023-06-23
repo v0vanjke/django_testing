@@ -26,7 +26,8 @@ def test_user_can_create_comment(
 @pytest.mark.django_db
 def test_anonymous_user_cant_create_comment(client, form_data, pk_for_args):
     """
-    Неавторизованный пользователь не может оставить комментарий.
+    Неавторизованный пользователь не может оставить комментарий
+    и будет переадресован на страницу авторизации.
     """
     url = reverse('news:detail', args=pk_for_args)
     response = client.post(url, data=form_data)
