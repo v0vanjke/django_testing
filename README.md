@@ -3,7 +3,7 @@
 Покрыл тестами два проекта.
 Маршруты, логику, содержание.
 
-ya_news - pytest
+ya_news - pytest, 
 ya_note - unittest
 
 ## Технологии
